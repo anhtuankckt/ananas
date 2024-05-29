@@ -31,7 +31,7 @@ const signup = async (req, res) => {
       const token = jwt.sign(
         { userId: newUser._id },
         process.env.JWT_SECRET,
-        { expiresIn: '1d' })
+        { expiresIn: '3h' })
 
       await newUser.save()
       newUser.password = null
@@ -58,7 +58,7 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' })
+      { expiresIn: '3h' })
 
     user.password = null
 
