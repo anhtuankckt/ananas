@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "./src/server.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
     "start": "node ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +13,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@babel/runtime": "^7.24.6",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.2.0",
     "cookie-parser": "^1.4.6",
@@ -24,12 +23,6 @@
     "mongoose": "^8.4.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.6",
-    "@babel/core": "^7.24.6",
-    "@babel/node": "^7.24.6",
-    "@babel/plugin-transform-runtime": "^7.24.6",
-    "@babel/preset-env": "^7.24.6",
-    "babel-plugin-module-resolver": "^5.0.2",
     "nodemon": "^3.1.1"
   }
 }

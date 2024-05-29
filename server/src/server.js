@@ -1,11 +1,16 @@
 import express from 'express'
+import dotenv from 'dotenv'
+import connectMongoDB from './db/connectMongoDB.js'
+import routes from './routes/index.js'
+dotenv.config()
 
 const app = express()
 
-app.get('/', (req, res) => {
-  res.send('123')
-})
+app.use('/api', routes)
 
-app.listen(8000, () => {
-  console.log(`Server is running on port 8000`)
+const PORT = process.env.PORT || 8001
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`)
+  connectMongoDB()
 })
