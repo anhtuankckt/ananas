@@ -1,14 +1,13 @@
 import express from 'express'
 import userController from '../controllers/userController.js'
-import { authenticateToken } from '../middlewares/authMiddleware.js'
 const router = express.Router()
 
-router.get('/profile/:username', authenticateToken, userController.getUserProfile)
+router.get('/profile/:username', userController.getUserProfile)
 
-router.get('/suggested', authenticateToken, userController.getSuggestUsers)
+router.get('/suggested', userController.getSuggestUsers)
 
-router.post('/follow/:id', authenticateToken, userController.followUnfollowUser)
+router.post('/follow/:id', userController.followUnfollowUser)
 
-router.post('/update', authenticateToken, userController.updateUserProfile)
+router.post('/update', userController.updateUserProfile)
 
 export default router

@@ -1,22 +1,21 @@
 import express from 'express'
 import postController from '../controllers/postController.js'
-import { authenticateToken } from '../middlewares/authMiddleware.js'
 const router = express.Router()
 
-router.get('/all', authenticateToken, postController.getAllPosts)
+router.get('/all', postController.getAllPosts)
 
-router.get('/following', authenticateToken, postController.getFollowingPosts)
+router.get('/following', postController.getFollowingPosts)
 
-router.get('/likes/:id', authenticateToken, postController.getLikedPosts)
+router.get('/likes/:id', postController.getLikedPosts)
 
-router.get('/users/:username', authenticateToken, postController.getUserPosts)
+router.get('/users/:username', postController.getUserPosts)
 
-router.post('/create', authenticateToken, postController.createPost)
+router.post('/create', postController.createPost)
 
-router.post('/like/:id', authenticateToken, postController.likeUnlikePost)
+router.post('/like/:id', postController.likeUnlikePost)
 
-router.post('/comment/:id', authenticateToken, postController.commentOnPost)
+router.post('/comment/:id', postController.commentOnPost)
 
-router.delete('/:id', authenticateToken, postController.deletePost)
+router.delete('/:id', postController.deletePost)
 
 export default router
