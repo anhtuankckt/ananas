@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import { v2 as cloudinary } from 'cloudinary'
+import cors from 'cors'
 
 import connectMongoDB from './db/connectMongoDB.js'
 import routes from './routes/index.js'
@@ -15,6 +16,12 @@ cloudinary.config({
 })
 
 const app = express()
+
+const corsOptions = {
+  origin: '*'
+}
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
