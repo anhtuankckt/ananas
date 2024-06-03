@@ -1,18 +1,55 @@
-import Post from './Post'
+import { useEffect, useState } from 'react'
 import PostSkeleton from '../skeletons/PostSkeleton'
-import { useState } from 'react'
+import Post from './Post'
+import postsApi from '~/api/modules/postsApi'
 
-import { POSTS } from '~/utils/db/dummy'
-
-const Posts = () => {
+const Posts = ({ feedType }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [isRefetching, setIsRefetching] = useState(false)
+  const [posts, setPosts] = useState([])
 
-  const posts = POSTS
+  const handleForYou = async () => {
+    const { response } = await postsApi.getAll()
+    return response
+  }
+
+  const handleFollowing = async () => {
+    const { response } = await postsApi.getFollowing()
+    return response
+  }
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setIsLoading(true)
+      let response
+
+      switch (feedType) {
+        case 'forYou':
+          response = await handleForYou()
+          break
+        case 'following':
+          response = await handleFollowing()
+          break
+        default:
+          response = await handleForYou()
+      }
+
+      if (response) {
+        setPosts(response)
+      }
+
+      setIsLoading(false)
+    }
+
+    fetchPosts()
+  }, [feedType])
+
+  const handlePostDelete = (postId) => {
+    setPosts(posts.filter(post => post._id !== postId))
+  }
 
   return (
     <>
-      {(isLoading || isRefetching) && (
+      {(isLoading) && (
         <div className='flex flex-col justify-center'>
           <PostSkeleton />
           <PostSkeleton />
@@ -20,14 +57,14 @@ const Posts = () => {
         </div>
       )}
 
-      {!isLoading && !isRefetching && posts?.length === 0 && (
+      {!isLoading && posts?.length === 0 && (
         <p className='text-center my-4'>No posts in this tab. Switch 👻</p>
       )}
 
-      {!isLoading && !isRefetching && posts && (
+      {!isLoading && posts && (
         <div>
           {posts.map((post) => (
-            <Post key={post._id} post={post} />
+            <Post key={post._id} post={post} onPostDeleted={handlePostDelete} />
           ))}
         </div>
       )}

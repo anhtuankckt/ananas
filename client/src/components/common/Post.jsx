@@ -8,13 +8,33 @@ import { Link } from "react-router-dom"
 import { toast } from "react-hot-toast"
 import LoadingSpinner from './LoadingSpinner'
 import { formatPostDate } from '~/utils/date'
+import { useSelector } from 'react-redux'
+import postsApi from '~/api/modules/postsApi'
 
-const Post = ({ post }) => {
+const Post = ({ post, onPostDeleted }) => {
+  const { authUser } = useSelector(state => state.auth)
   const [comment, setComment] = useState('')
+  const [isLiking, setIsLiking] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const postOwner = post.user
   const formattedDate = formatPostDate(post.createdAt)
-  let isLiked = true
-  let isLiking = false
+  const isLiked = post.likes.includes(authUser._id)
+
+  const isMyPost = authUser._id === post.user._id
+
+  const handleDeletePost = async (postId) => {
+    setIsDeleting(true)
+    const { response, error } = await postsApi.deletePost(postId)
+    if (response) {
+      toast.success('Post deleted successfully')
+      setIsDeleting(false)
+      onPostDeleted(postId)
+    }
+    if (error) {
+      console.error(error)
+      toast.success(error)
+    }
+  }
 
   return (
     <>
@@ -35,10 +55,15 @@ const Post = ({ post }) => {
               <span>{formattedDate}</span>
             </span>
 
-            <span className='flex justify-end flex-1'>
-              <FaTrash className='cursor-pointer hover:text-red-500' />
-              <LoadingSpinner size='sm' />
-            </span>
+            {isMyPost && (
+              <span className='flex justify-end flex-1'>
+                {!isDeleting && (
+                  <FaTrash className='cursor-pointer hover:text-red-500' onClick={() => handleDeletePost(post._id)} />
+                )}
+
+                {isDeleting && <LoadingSpinner size='sm' />}
+              </span>
+            )}
           </div>
 
           <div className='flex flex-col gap-3 overflow-hidden'>
