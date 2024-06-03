@@ -1,35 +1,58 @@
 import { Route, Routes } from 'react-router-dom'
-import SignUpPage from './pages/auth/signup/SignUpPage'
-import Login from './pages/auth/login/Login'
-import HomePage from './pages/home/HomePage'
+
+import routes from './routes/routes'
+import CheckLogged from './components/common/CheckLogged'
+import ProtectedPage from './components/common/ProtectedPage'
 
 import Sidebar from './components/common/Sidebar'
 import RightPanel from './components/common/RightPanel'
 
-import LoadingSpinner from './components/common/LoadingSpinner'
+import { Toaster } from 'react-hot-toast'
+
+// import LoadingSpinner from './components/common/LoadingSpinner'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import authApi from './api/modules/authApi'
+import { setUser } from './redux/features/authSlice'
+
 
 const App = () => {
-  let isLoading = false
+  const { authUser } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
 
-  if (isLoading) {
-    return (
-      <div className='h-screen flex justify-center items-center'>
-        <LoadingSpinner size='lg' />
-      </div>
-    )
-  }
+  // let isLoading = false
+
+  // if (isLoading) {
+  //   return (
+  //     <div className='h-screen flex justify-center items-center'>
+  //       <LoadingSpinner size='lg' />
+  //     </div>
+  //   )
+  // }
+
+  useEffect(() => {
+    const authUser = async () => {
+      const { response, error } = await authApi.getMe()
+
+      if (response) dispatch(setUser(response))
+      if (error) dispatch(setUser(null))
+    }
+    authUser()
+  }, [dispatch])
 
   return (
     <div className='flex max-w-6xl mx-auto'>
-      <Sidebar />
+      {authUser && <Sidebar />}
 
       <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/signup' element={<SignUpPage />} />
-        <Route path='/login' element={<Login />} />
+        {routes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.checkLogged ? <CheckLogged>{route.element}</CheckLogged> : <ProtectedPage>{route.element}</ProtectedPage>} />
+        ))}
       </Routes>
 
-      <RightPanel />
+      {authUser && <RightPanel />}
+
+      <Toaster />
     </div>
   )
 }

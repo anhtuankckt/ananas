@@ -6,9 +6,16 @@ import { MdPassword } from 'react-icons/md'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import ASvg from '~/components/svgs/ASvg'
 
+import { useDispatch } from 'react-redux'
+import { setUser } from '~/redux/features/authSlice'
+import toast from 'react-hot-toast'
+import authApi from '~/api/modules/authApi'
 
 const SignUpPage = () => {
-  const [isError, setIsError] = useState(false)
+  const [isError, setIsError] = useState()
+  const [isPending, setIsPending] = useState()
+  const dispatch = useDispatch()
+
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -16,10 +23,35 @@ const SignUpPage = () => {
     password: ''
   })
 
-  const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
+  const handleInputChange = (e) => {
+    setIsError(false)
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsError(false)
+    setIsPending(true)
+    setFormData({
+      email: '',
+      username: '',
+      fullName: '',
+      password: ''
+    })
+    try {
+      const { response, error } = await authApi.signup(formData)
+      setIsPending(false)
+      if (response) {
+        dispatch(setUser(response))
+        toast.success('Account created successfully')
+      }
+      if (error) {
+        setIsError(error.error)
+      }
+    } catch (error) {
+      console.erorr(error)
+      toast.error(error.error)
+    }
   }
 
   return (
@@ -77,8 +109,8 @@ const SignUpPage = () => {
               onChange={handleInputChange}
             />
           </label>
-          <button className="btn btn-primary rounded-full text-white">Sign Up</button>
-          {isError && <p className='text-red-500'>Something went wrong</p>}
+          <button className="btn btn-primary rounded-full text-white" >{isPending ? 'Loading...' : 'Sign Up'}</button>
+          {isError && <p className='text-red-500'>{isError}</p>}
         </form>
         <div className='flex flex-col lg:w-2/3 gap-2 mt-4'>
           <p className='text-white text-lg'>Already have an account?</p>

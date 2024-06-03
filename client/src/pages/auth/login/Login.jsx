@@ -1,37 +1,46 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { MdOutlineMail } from 'react-icons/md'
 import { MdPassword } from 'react-icons/md'
 import ASvg from '~/components/svgs/ASvg'
 import authApi from '~/api/modules/authApi'
 import { setUser } from '~/redux/features/authSlice'
 import { useDispatch } from 'react-redux'
+import toast from 'react-hot-toast'
 
 const Login = () => {
-  const [isError, setIsError] = useState(false)
+  const [isError, setIsError] = useState()
+  const [isPending, setIsPending] = useState()
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   })
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
-  const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
+  const handleInputChange = (e) => {
+    setIsError(false)
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const { response, error } = await authApi.login(formData)
-    if (response) {
-      dispatch(setUser(response))
-      setFormData({
-        username: '',
-        password: ''
-      })
-      navigate('/')
-    }
+    setIsPending(true)
+    setFormData({ username: '', password: '' })
+    try {
+      const { response, error } = await authApi.login(formData)
+      setIsPending(false)
 
-    if (error) setIsError(error.error)
+      if (response) {
+        dispatch(setUser(response))
+        toast.success('Login successfully')
+      }
+
+      if (error) setIsError(error.error)
+    } catch (error) {
+      console.error(error)
+      toast.error(error.error)
+    }
   }
 
 
@@ -68,7 +77,7 @@ const Login = () => {
             />
           </label>
 
-          <button className='btn btn-primary rounded-full text-white'>Login</button>
+          <button className='btn btn-primary rounded-full text-white'>{isPending ? 'Loading...' : 'Login'}</button>
           {isError && <p className='text-red-500'>{isError}</p>}
         </form>
 

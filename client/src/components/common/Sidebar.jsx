@@ -7,10 +7,17 @@ import { BiLogOut } from "react-icons/bi"
 import ASvg from '../svgs/ASvg'
 import toast from 'react-hot-toast'
 
-import { POSTS } from '~/utils/db/dummy'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '~/redux/features/authSlice'
 
 const Sidebar = () => {
-  const authUser = POSTS[0].user
+  const { authUser } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+
+  const logout = () => {
+    toast.success('Logout successful')
+    dispatch(setUser(null))
+  }
 
   return (
     <div className='md:flex-[2_2_0] w-18 max-w-52'>
