@@ -2,8 +2,12 @@ import { useRef, useState } from 'react'
 import { IoCloseSharp } from 'react-icons/io5'
 import { CiImageOn } from 'react-icons/ci'
 import { BsEmojiSmileFill } from 'react-icons/bs'
+import postsApi from '~/api/modules/postsApi'
+import { useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 
-const CreatePost = () => {
+const CreatePost = ({ onPostUpdate }) => {
+  const { authUser } = useSelector(state => state.auth)
   const [text, setText] = useState('')
   const [img, setImg] = useState(null)
   const imgRef = useRef(null)
@@ -21,15 +25,28 @@ const CreatePost = () => {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    setIsPending(true)
     e.preventDefault()
+    const { response, error } = await postsApi.createPost({ text, img })
+    setIsPending(false)
+    if (response) {
+      setText('')
+      setImg(null)
+      toast.success('Post created successfully')
+      onPostUpdate()
+    }
+
+    if (error) {
+      setIsError('Something went wrong')
+    }
   }
 
   return (
     <div className='flex p-4 items-start gap-4 border-b border-gray-700'>
       <div className='avatar'>
         <div className='w-8 rounded-full'>
-          <img src="/avatar-placeholder.png" alt="" />
+          <img src={authUser.profileImg || "/avatar-placeholder.png"} alt="" />
         </div>
       </div>
 

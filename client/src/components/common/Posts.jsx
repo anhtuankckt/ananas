@@ -3,7 +3,7 @@ import PostSkeleton from '../skeletons/PostSkeleton'
 import Post from './Post'
 import postsApi from '~/api/modules/postsApi'
 
-const Posts = ({ feedType }) => {
+const Posts = ({ feedType, postUpdate }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [posts, setPosts] = useState([])
 
@@ -41,7 +41,7 @@ const Posts = ({ feedType }) => {
     }
 
     fetchPosts()
-  }, [feedType])
+  }, [feedType, postUpdate])
 
   const handlePostDelete = (postId) => {
     setPosts(posts.filter(post => post._id !== postId))

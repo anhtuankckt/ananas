@@ -6,7 +6,7 @@ const getPostEndPoint = {
 }
 
 const postEndPoint = {
-  createPost: '',
+  createPost: 'posts/create',
   deletePost: (id) => `posts/${id}`,
   commentOnPost: '',
   getLikedPosts: ''
@@ -32,6 +32,14 @@ const postsApi = {
   deletePost: async (id) => {
     try {
       const response = await privateClient.delete(postEndPoint.deletePost(id))
+      return { response }
+    } catch (error) {
+      return { error }
+    }
+  },
+  createPost: async ({ text, img }) => {
+    try {
+      const response = await privateClient.post(postEndPoint.createPost, { text, img })
       return { response }
     } catch (error) {
       return { error }

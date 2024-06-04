@@ -4,6 +4,11 @@ import Posts from '~/components/common/Posts'
 
 const HomePage = () => {
   const [feedType, setFeedType] = useState('forYou')
+  const [postUpdate, setPostUpdate] = useState(false)
+
+  const handlePostUpdate = () => {
+    setPostUpdate(prevState => !prevState)
+  }
 
   return (
     <div className='flex-[4_4_0] mr-auto border-r border-gray-700 min-h-screen'>
@@ -28,10 +33,10 @@ const HomePage = () => {
       </div>
 
       {/* CREATE POST INPUT */}
-      <CreatePost />
+      <CreatePost onPostUpdate={handlePostUpdate} />
 
       {/* POSTS */}
-      <Posts feedType={feedType} />
+      <Posts feedType={feedType} postUpdate={postUpdate} />
     </div>
   )
 }
