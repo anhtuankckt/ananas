@@ -1,14 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import LoadingSpinner from './LoadingSpinner'
 import RightPanelSkeleton from '../skeletons/RightPanelSkeleton'
+import userApi from '~/api/modules/userApi'
 
 const RightPanel = () => {
-  let isLoading = false
-  let isPending = false
-  let suggestedUsers = []
+  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, setIsPending] = useState(false)
+  const [suggestedUsers, setSuggestedUsers] = useState([])
 
-  // if (suggestedUsers?.length === 0) return <div className='md:w-64 w-0'></div>
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true)
+      const { response } = await userApi.suggestedUsers()
+      setIsLoading(false)
+      if (response) {
+        setSuggestedUsers(response)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (suggestedUsers?.length === 0) return <div className='md:w-64 w-0'></div>
 
   return (
     <div className='hidden lg:block my-4 mx-2'>
