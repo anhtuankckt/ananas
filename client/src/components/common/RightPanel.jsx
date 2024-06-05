@@ -3,23 +3,28 @@ import { Link } from 'react-router-dom'
 import LoadingSpinner from './LoadingSpinner'
 import RightPanelSkeleton from '../skeletons/RightPanelSkeleton'
 import userApi from '~/api/modules/userApi'
+import useFollow from '~/hooks/useFollow'
+import { useSelector } from 'react-redux'
 
 const RightPanel = () => {
+  const { authUser } = useSelector(state => state.auth)
   const [isLoading, setIsLoading] = useState(false)
-  const [isPending, setIsPending] = useState(false)
   const [suggestedUsers, setSuggestedUsers] = useState([])
+
+  const { follow, isPending, isChangeFollow } = useFollow()
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const { response } = await userApi.suggestedUsers()
+      const { response } = await userApi.suggested()
       setIsLoading(false)
       if (response) {
         setSuggestedUsers(response)
       }
     }
+
     fetchData()
-  }, [])
+  }, [authUser, isChangeFollow])
 
   if (suggestedUsers?.length === 0) return <div className='md:w-64 w-0'></div>
 
@@ -62,7 +67,7 @@ const RightPanel = () => {
                     className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
                     onClick={(e) => {
                       e.preventDefault()
-
+                      follow(user._id)
                     }}
                   >
                     {isPending ? <LoadingSpinner size='sm' /> : "Follow"}

@@ -11,7 +11,7 @@ import { formatPostDate } from '~/utils/date'
 import { useSelector } from 'react-redux'
 import postsApi from '~/api/modules/postsApi'
 
-const Post = ({ post, onPostDeleted }) => {
+const Post = ({ post, updateDeletePost, updateLikePost }) => {
   const { authUser } = useSelector(state => state.auth)
   const [comment, setComment] = useState('')
   const [isLiking, setIsLiking] = useState(false)
@@ -22,14 +22,30 @@ const Post = ({ post, onPostDeleted }) => {
 
   const isMyPost = authUser._id === post.user._id
 
-  const handleDeletePost = async (postId) => {
+  const isCommenting = false
+
+  const deletePost = async (postId) => {
     setIsDeleting(true)
     const { response, error } = await postsApi.deletePost(postId)
+    setIsDeleting(false)
     if (response) {
+      updateDeletePost(postId)
       toast.success('Post deleted successfully')
-      setIsDeleting(false)
-      onPostDeleted(postId)
     }
+    if (error) {
+      console.error(error)
+      toast.success(error)
+    }
+  }
+
+  const handleLikeUnlikePost = async (postId) => {
+    setIsLiking(true)
+    const { response, error } = await postsApi.likeUnlikePost(postId)
+    setIsLiking(false)
+    if (response) {
+      updateLikePost(postId, response)
+    }
+
     if (error) {
       console.error(error)
       toast.success(error)
@@ -58,7 +74,7 @@ const Post = ({ post, onPostDeleted }) => {
             {isMyPost && (
               <span className='flex justify-end flex-1'>
                 {!isDeleting && (
-                  <FaTrash className='cursor-pointer hover:text-red-500' onClick={() => handleDeletePost(post._id)} />
+                  <FaTrash className='cursor-pointer hover:text-red-500' onClick={() => deletePost(post._id)} />
                 )}
 
                 {isDeleting && <LoadingSpinner size='sm' />}
@@ -126,8 +142,8 @@ const Post = ({ post, onPostDeleted }) => {
                       onChange={(e) => setComment(e.target.value)}
                     />
                     <button className='btn btn-primary rounded-full btn-sm text-white px-4'>
-                      {/* isLoading.. */}
-                      Post
+                      {isCommenting ? <LoadingSpinner size='md' />
+                        : 'Post'}
                     </button>
                   </form>
                 </div>
@@ -141,7 +157,7 @@ const Post = ({ post, onPostDeleted }) => {
                 <span className='text-sm text-slate-500 group-hover:text-green-500'>0</span>
               </div>
 
-              <div className='flex gap-1 items-center group cursor-pointer'>
+              <div className='flex gap-1 items-center group cursor-pointer' onClick={() => handleLikeUnlikePost(post._id)}>
                 {isLiking && <LoadingSpinner size='sm' />}
                 {!isLiked && !isLiking && (
                   <FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />

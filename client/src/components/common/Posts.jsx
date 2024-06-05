@@ -3,9 +3,17 @@ import PostSkeleton from '../skeletons/PostSkeleton'
 import Post from './Post'
 import postsApi from '~/api/modules/postsApi'
 
-const Posts = ({ feedType, postUpdate }) => {
+const Posts = ({ feedType, postUpdate, username, userId }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [posts, setPosts] = useState([])
+
+  const updateDeletePost = (postId) => {
+    setPosts(prevPosts => prevPosts.filter(post => post._id !== postId))
+  }
+
+  const updateLikePost = (postId, updatedLikes) => {
+    setPosts(prevPosts => prevPosts.map(post => post._id === postId ? { ...post, likes: updatedLikes } : post))
+  }
 
   const handleForYou = async () => {
     const { response } = await postsApi.getAll()
@@ -14,6 +22,16 @@ const Posts = ({ feedType, postUpdate }) => {
 
   const handleFollowing = async () => {
     const { response } = await postsApi.getFollowing()
+    return response
+  }
+
+  const handleUser = async () => {
+    const { response } = await postsApi.getPostsUser(username)
+    return response
+  }
+
+  const handleLikes = async () => {
+    const { response } = await postsApi.getLikes(userId)
     return response
   }
 
@@ -29,6 +47,12 @@ const Posts = ({ feedType, postUpdate }) => {
         case 'following':
           response = await handleFollowing()
           break
+        case 'posts':
+          response = await handleUser()
+          break
+        case 'likes':
+          response = await handleLikes()
+          break
         default:
           response = await handleForYou()
       }
@@ -41,11 +65,7 @@ const Posts = ({ feedType, postUpdate }) => {
     }
 
     fetchPosts()
-  }, [feedType, postUpdate])
-
-  const handlePostDelete = (postId) => {
-    setPosts(posts.filter(post => post._id !== postId))
-  }
+  }, [feedType, postUpdate, username, userId])
 
   return (
     <>
@@ -64,7 +84,7 @@ const Posts = ({ feedType, postUpdate }) => {
       {!isLoading && posts && (
         <div>
           {posts.map((post) => (
-            <Post key={post._id} post={post} onPostDeleted={handlePostDelete} />
+            <Post key={post._id} post={post} updateDeletePost={updateDeletePost} updateLikePost={updateLikePost} />
           ))}
         </div>
       )}

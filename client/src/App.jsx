@@ -1,25 +1,20 @@
 import { Route, Routes } from 'react-router-dom'
-
 import routes from './routes/routes'
 import CheckLogged from './components/common/CheckLogged'
 import ProtectedPage from './components/common/ProtectedPage'
-
 import Sidebar from './components/common/Sidebar'
 import RightPanel from './components/common/RightPanel'
-
 import { Toaster } from 'react-hot-toast'
-
 // import LoadingSpinner from './components/common/LoadingSpinner'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import authApi from './api/modules/authApi'
 import { setUser } from './redux/features/authSlice'
-
 
 const App = () => {
   const { authUser } = useSelector(state => state.auth)
   const dispatch = useDispatch()
-
+  const [isFetchData, setIsFetchData] = useState(true)
   // let isLoading = false
 
   // if (isLoading) {
@@ -31,14 +26,16 @@ const App = () => {
   // }
 
   useEffect(() => {
-    const authUser = async () => {
+    const fetchAuthUser = async () => {
       const { response, error } = await authApi.getMe()
-
+      setIsFetchData(false)
       if (response) dispatch(setUser(response))
       if (error) dispatch(setUser(null))
     }
-    authUser()
-  }, [dispatch])
+    if (isFetchData) {
+      fetchAuthUser()
+    }
+  }, [dispatch, isFetchData, authUser])
 
   return (
     <div className='flex max-w-6xl mx-auto'>

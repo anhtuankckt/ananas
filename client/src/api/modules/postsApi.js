@@ -2,14 +2,16 @@ import privateClient from '../client/privateClient'
 
 const getPostEndPoint = {
   all: 'posts/all',
-  following: 'posts/following'
+  following: 'posts/following',
+  user: (username) => `posts/users/${username}`,
+  likes: (userId) => `posts/likes/${userId}`
 }
 
 const postEndPoint = {
   createPost: 'posts/create',
   deletePost: (id) => `posts/${id}`,
-  commentOnPost: '',
-  getLikedPosts: ''
+  likeUnlikePost: (postId) => `posts/like/${postId}`,
+  commentOnPost: ''
 }
 
 const postsApi = {
@@ -40,6 +42,30 @@ const postsApi = {
   createPost: async ({ text, img }) => {
     try {
       const response = await privateClient.post(postEndPoint.createPost, { text, img })
+      return { response }
+    } catch (error) {
+      return { error }
+    }
+  },
+  getPostsUser: async (username) => {
+    try {
+      const response = await privateClient.get(getPostEndPoint.user(username))
+      return { response }
+    } catch (error) {
+      return { error }
+    }
+  },
+  getLikes: async (userId) => {
+    try {
+      const response = await privateClient.get(getPostEndPoint.likes(userId))
+      return { response }
+    } catch (error) {
+      return { error }
+    }
+  },
+  likeUnlikePost: async (postId) => {
+    try {
+      const response = await privateClient.post(postEndPoint.likeUnlikePost(postId))
       return { response }
     } catch (error) {
       return { error }
