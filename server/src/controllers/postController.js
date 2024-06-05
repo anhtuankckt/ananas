@@ -68,7 +68,15 @@ const commentOnPost = async (req, res) => {
     post.comments.push(comment)
     await post.save()
 
-    post = await Post.findById(postId).populate('user').populate('comments.user')
+    post = await Post.findById(postId)
+      .populate({
+        path: 'user',
+        select: '-password'
+      })
+      .populate({
+        path: 'comments.user',
+        select: '-password'
+      })
 
     res.status(201).json(post)
   } catch (error) {

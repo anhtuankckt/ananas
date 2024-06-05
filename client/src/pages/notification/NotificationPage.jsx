@@ -33,7 +33,6 @@ const NotificationPage = () => {
       setIsLoading(false)
       if (response) {
         setNotifications(response)
-        console.log('response', response)
       }
 
       if (error) {

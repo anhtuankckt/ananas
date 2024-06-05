@@ -55,7 +55,7 @@ const postsApi = {
       return { error }
     }
   },
-  getLikes: async (userId) => {
+  getLiked: async (userId) => {
     try {
       const response = await privateClient.get(getPostEndPoint.likes(userId))
       return { response }

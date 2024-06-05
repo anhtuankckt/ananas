@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import Posts from '~/components/common/Posts'
 import useFollow from '~/hooks/useFollow'
 import ProfileHeaderSkeleton from '~/components/skeletons/ProfileHeaderSkeleton'
+import postsApi from '~/api/modules/postsApi'
 
 const ProfilePage = () => {
   const { authUser } = useSelector(state => state.auth)
@@ -18,15 +19,13 @@ const ProfilePage = () => {
   const [profileImg, setProfileImg] = useState(null)
   const [feedType, setFeedType] = useState("posts")
   const [isLoading, setIsLoading] = useState(false)
-  const [isRefetching, setIsRefetching] = useState(false)
   const [user, setUser] = useState({})
+  const [posts, setPosts] = useState([])
 
   const coverImgRef = useRef(null)
   const profileImgRef = useRef(null)
 
   const { username } = useParams()
-
-  let POSTS = []
 
   const { follow, isPending } = useFollow()
 
@@ -36,9 +35,9 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchProfileUser = async (username) => {
-      setIsRefetching(true)
+      setIsLoading(true)
       const { response, error } = await userApi.userProfile(username)
-      setIsRefetching(false)
+      setIsLoading(false)
       if (response) {
         setUser(response)
       }
@@ -48,16 +47,29 @@ const ProfilePage = () => {
       }
     }
     fetchProfileUser(username)
+
+    const fetchPostsUser = async (username) => {
+      const { response, error } = await postsApi.getPostsUser(username)
+      if (response) {
+        setPosts(response)
+      }
+
+      if (error) {
+        console.error(error)
+      }
+    }
+    fetchPostsUser(username)
   }, [username])
+
 
   return (
     <>
       <div className='flex-[4_4_0]  border-r border-gray-700 min-h-screen '>
         {/* HEADER */}
-        {(isLoading || isRefetching) && <ProfileHeaderSkeleton />}
-        {!isLoading && !isRefetching && !user && <p className='text-center text-lg mt-4'>User not found</p>}
+        {isLoading && <ProfileHeaderSkeleton />}
+        {!isLoading && !user && <p className='text-center text-lg mt-4'>User not found</p>}
         <div className='flex flex-col'>
-          {!isLoading && !isRefetching && user && (
+          {!isLoading && user && (
             <>
               <div className='flex gap-10 px-4 py-2 items-center'>
                 <Link to='/'>
@@ -65,7 +77,7 @@ const ProfilePage = () => {
                 </Link>
                 <div className='flex flex-col'>
                   <p className='font-bold text-lg'>{user?.fullName}</p>
-                  <span className='text-sm text-slate-500'>{POSTS?.length} posts</span>
+                  <span className='text-sm text-slate-500'>{posts?.length} posts</span>
                 </div>
               </div>
               {/* COVER IMG */}

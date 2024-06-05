@@ -35,7 +35,7 @@ const Posts = ({ feedType, postUpdate, username, userId }) => {
   }
 
   const handleLikes = async () => {
-    const { response } = await postsApi.getLikes(userId)
+    const { response } = await postsApi.getLiked(userId)
     return response
   }
 
