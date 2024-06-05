@@ -15,6 +15,10 @@ const Posts = ({ feedType, postUpdate, username, userId }) => {
     setPosts(prevPosts => prevPosts.map(post => post._id === postId ? { ...post, likes: updatedLikes } : post))
   }
 
+  const updateCommentPost = (postId, commentUpdate) => {
+    setPosts(prevPosts => prevPosts.map(post => post._id === postId ? { ...post, comments: commentUpdate.comments } : post))
+  }
+
   const handleForYou = async () => {
     const { response } = await postsApi.getAll()
     return response
@@ -84,7 +88,7 @@ const Posts = ({ feedType, postUpdate, username, userId }) => {
       {!isLoading && posts && (
         <div>
           {posts.map((post) => (
-            <Post key={post._id} post={post} updateDeletePost={updateDeletePost} updateLikePost={updateLikePost} />
+            <Post key={post._id} post={post} updateDeletePost={updateDeletePost} updateLikePost={updateLikePost} updateCommentPost={updateCommentPost} />
           ))}
         </div>
       )}

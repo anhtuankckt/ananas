@@ -11,18 +11,17 @@ import { formatPostDate } from '~/utils/date'
 import { useSelector } from 'react-redux'
 import postsApi from '~/api/modules/postsApi'
 
-const Post = ({ post, updateDeletePost, updateLikePost }) => {
+const Post = ({ post, updateDeletePost, updateLikePost, updateCommentPost }) => {
   const { authUser } = useSelector(state => state.auth)
   const [comment, setComment] = useState('')
   const [isLiking, setIsLiking] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isCommenting, setIsCommenting] = useState(false)
   const postOwner = post.user
   const formattedDate = formatPostDate(post.createdAt)
   const isLiked = post.likes.includes(authUser._id)
 
   const isMyPost = authUser._id === post.user._id
-
-  const isCommenting = false
 
   const deletePost = async (postId) => {
     setIsDeleting(true)
@@ -48,8 +47,28 @@ const Post = ({ post, updateDeletePost, updateLikePost }) => {
 
     if (error) {
       console.error(error)
-      toast.success(error)
     }
+  }
+
+  const handleCommentPost = async (e, postId) => {
+    e.preventDefault()
+    setIsCommenting(true)
+    const { response, error } = await postsApi.commentPost(postId, comment)
+    setIsCommenting(false)
+
+    if (response) {
+      setComment('')
+      document.getElementById('comments_modal' + postId).close()
+      updateCommentPost(postId, response)
+      toast.success('Comment posted successfully')
+    }
+
+    if (error) {
+      console.error(error)
+      document.getElementById('comments_modal' + postId).close()
+      toast.error('Something went wrong')
+    }
+
   }
 
   return (
@@ -141,7 +160,7 @@ const Post = ({ post, updateDeletePost, updateLikePost }) => {
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                     />
-                    <button className='btn btn-primary rounded-full btn-sm text-white px-4'>
+                    <button className='btn btn-primary rounded-full btn-sm text-white px-4' onClick={(e) => handleCommentPost(e, post._id)}>
                       {isCommenting ? <LoadingSpinner size='md' />
                         : 'Post'}
                     </button>

@@ -60,13 +60,15 @@ const commentOnPost = async (req, res) => {
 
     if (!text) return res.status(400).json({ error: 'Text field is required' })
 
-    const post = await Post.findById(postId)
+    let post = await Post.findById(postId)
     if (!post) return res.status(404).json({ error: 'Post not found' })
 
     const comment = { user: userId, text }
 
     post.comments.push(comment)
     await post.save()
+
+    post = await Post.findById(postId).populate('user').populate('comments.user')
 
     res.status(201).json(post)
   } catch (error) {

@@ -11,7 +11,7 @@ const postEndPoint = {
   createPost: 'posts/create',
   deletePost: (id) => `posts/${id}`,
   likeUnlikePost: (postId) => `posts/like/${postId}`,
-  commentOnPost: ''
+  commentPost: (postId) => `posts/comment/${postId}`
 }
 
 const postsApi = {
@@ -66,6 +66,14 @@ const postsApi = {
   likeUnlikePost: async (postId) => {
     try {
       const response = await privateClient.post(postEndPoint.likeUnlikePost(postId))
+      return { response }
+    } catch (error) {
+      return { error }
+    }
+  },
+  commentPost: async (postId, comment) => {
+    try {
+      const response = await privateClient.post(postEndPoint.commentPost(postId), { text: comment })
       return { response }
     } catch (error) {
       return { error }

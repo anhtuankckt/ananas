@@ -33,12 +33,14 @@ const CreatePost = ({ onPostUpdate }) => {
     if (response) {
       setText('')
       setImg(null)
+      setIsError(false)
       toast.success('Post created successfully')
       onPostUpdate()
     }
 
     if (error) {
       setIsError('Something went wrong')
+      window.history.back()
     }
   }
 
