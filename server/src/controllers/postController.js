@@ -12,7 +12,7 @@ const createPost = async (req, res) => {
     const user = await User.findById(userId)
     if (!user) return res.status(404).json({ error: 'User not found' })
 
-    if (!text && !img) return res.status(400).json({ error: 'Post must have text or image' })
+    if (!text.trim() && !img) return res.status(400).json({ error: 'Post must have text or image' })
 
     if (img) {
       const uploadResponse = await cloudinary.uploader.upload(img)
@@ -21,7 +21,7 @@ const createPost = async (req, res) => {
 
     const newPost = new Post({
       user: userId,
-      text,
+      text: text.trim(),
       img
     })
 
@@ -58,12 +58,12 @@ const commentOnPost = async (req, res) => {
     const postId = req.params.id
     const userId = req.user._id
 
-    if (!text) return res.status(400).json({ error: 'Text field is required' })
+    if (!text.trim()) return res.status(400).json({ error: 'Text field is required' })
 
     let post = await Post.findById(postId)
     if (!post) return res.status(404).json({ error: 'Post not found' })
 
-    const comment = { user: userId, text }
+    const comment = { user: userId, text: text.trim() }
 
     post.comments.push(comment)
     await post.save()

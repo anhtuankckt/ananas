@@ -6,6 +6,4 @@ router.get('/', notificationController.getNotifications)
 
 router.delete('/', notificationController.deleteNotifications)
 
-router.delete('/:id', notificationController.deleteNotification)
-
 export default router
