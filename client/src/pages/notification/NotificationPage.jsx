@@ -1,15 +1,52 @@
 import { Link } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import LoadingSpinner from '~/components/common/LoadingSpinner'
+
 import { IoSettingsOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
 import { FaHeart } from "react-icons/fa6"
-import LoadingSpinner from '~/components/common/LoadingSpinner'
 
-const Notification = () => {
+import notificationApi from '~/api/modules/notificationApi'
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
-  let notifications = []
+const NotificationPage = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [notifications, setNotifications] = useState([])
 
-  const deleteNotifications = () => { }
+  const deleteNotifications = async () => {
+    const { response, error } = await notificationApi.deleteNotifications()
+
+    if (response) {
+      toast.success('Notifications deleted successfully')
+    }
+
+    if (error) {
+      console.error(error)
+      toast.error(error.error || 'Something went wrong')
+    }
+  }
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      setIsLoading(true)
+      const { response, error } = await notificationApi.notifications()
+      setIsLoading(false)
+      if (response) {
+        setNotifications(response)
+        console.log('response', response)
+      }
+
+      if (error) {
+        console.error(error.error || 'Something went wrong')
+        setIsLoading(false)
+      }
+    }
+    fetchNotifications()
+
+    const intervalId = setInterval(fetchNotifications, 10000)
+
+    return () => clearInterval(intervalId)
+  }, [])
 
   return (
     <>
@@ -25,7 +62,7 @@ const Notification = () => {
               className='dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52'
             >
               <li>
-                <a onClick={deleteNotifications}>Delete all notifications</a>
+                <button onClick={deleteNotifications}>Delete all notifications</button>
               </li>
             </ul>
           </div>
@@ -60,4 +97,4 @@ const Notification = () => {
   )
 }
 
-export default Notification
+export default NotificationPage

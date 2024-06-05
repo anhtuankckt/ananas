@@ -1,7 +1,7 @@
 import HomePage from '~/pages/home/HomePage'
 import Login from '~/pages/auth/login/Login'
 import SignUpPage from '~/pages/auth/signup/SignUpPage'
-import Notification from '~/pages/notification/Notification'
+import NotificationPage from '~/pages/notification/NotificationPage'
 import ProfilePage from '~/pages/profile/ProfilePage'
 
 const routes = [
@@ -21,7 +21,7 @@ const routes = [
   },
   {
     path: '/notifications',
-    element: <Notification />
+    element: <NotificationPage />
   },
   {
     path: '/profile/:username',
