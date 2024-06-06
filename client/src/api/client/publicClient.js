@@ -1,7 +1,7 @@
 import axios from 'axios'
 import queryString from 'query-string'
 
-const baseURL = import.meta.env.VITE_BASE_URL
+const baseURL = 'https://ananas-1p32.onrender.com'
 
 const publicClient = axios.create({
   baseURL,
