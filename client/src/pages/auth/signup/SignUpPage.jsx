@@ -5,7 +5,6 @@ import { FaUser } from 'react-icons/fa'
 import { MdPassword } from 'react-icons/md'
 import { MdDriveFileRenameOutline } from 'react-icons/md'
 import ASvg from '~/components/svgs/ASvg'
-
 import { useDispatch } from 'react-redux'
 import { setUser } from '~/redux/features/authSlice'
 import toast from 'react-hot-toast'

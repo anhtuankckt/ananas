@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 
 import authSlice from './features/authSlice'
+import userSlice from './features/userSlice'
 
 const persistConfig = {
   key: 'ananas',
@@ -11,10 +12,12 @@ const persistConfig = {
 }
 
 const persistedAuthReducer = persistReducer(persistConfig, authSlice)
+const persistedUserReducer = persistReducer(persistConfig, userSlice)
 
 export const store = configureStore({
   reducer: {
-    auth: persistedAuthReducer
+    auth: persistedAuthReducer,
+    user: persistedUserReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

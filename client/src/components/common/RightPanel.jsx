@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import LoadingSpinner from './LoadingSpinner'
-import RightPanelSkeleton from '../skeletons/RightPanelSkeleton'
-import userApi from '~/api/modules/userApi'
 import useFollow from '~/hooks/useFollow'
-import { useSelector } from 'react-redux'
+import LoadingSpinner from './LoadingSpinner'
+import userApi from '~/api/modules/userApi'
+import { setSuggestedUsers } from '~/redux/features/userSlice'
+import RightPanelSkeleton from '../skeletons/RightPanelSkeleton'
 
 const RightPanel = () => {
-  const { authUser } = useSelector(state => state.auth)
   const [isLoading, setIsLoading] = useState(false)
-  const [suggestedUsers, setSuggestedUsers] = useState([])
+  const { suggestedUsers } = useSelector(state => state.user)
 
-  const { follow, isPending, isChangeFollow } = useFollow()
+  const { follow, isPending } = useFollow()
+  const disptach = useDispatch()
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSuggested = async () => {
       setIsLoading(true)
       const { response } = await userApi.suggested()
       setIsLoading(false)
-      if (response) {
-        setSuggestedUsers(response)
-      }
+      if (response) disptach(setSuggestedUsers(response))
     }
 
-    fetchData()
-  }, [authUser, isChangeFollow])
+    fetchSuggested()
+  }, [])
 
   if (suggestedUsers?.length === 0) return <div className='md:w-64 w-0'></div>
 

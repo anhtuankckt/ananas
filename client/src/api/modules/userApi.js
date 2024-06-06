@@ -3,7 +3,8 @@ import privateClient from '../client/privateClient'
 const userEndpoint = {
   suggested: 'users/suggested',
   follow: (userId) => `users/follow/${userId}`,
-  userProfile: (username) => `users/profile/${username}`
+  userProfile: (username) => `users/profile/${username}`,
+  updateUser: 'users/update'
 }
 
 const userApi = {
@@ -26,6 +27,14 @@ const userApi = {
   userProfile: async (username) => {
     try {
       const response = await privateClient.get(userEndpoint.userProfile(username))
+      return { response }
+    } catch (error) {
+      return { error }
+    }
+  },
+  updateUser: async (formData) => {
+    try {
+      const response = await privateClient.post(userEndpoint.updateUser, formData)
       return { response }
     } catch (error) {
       return { error }

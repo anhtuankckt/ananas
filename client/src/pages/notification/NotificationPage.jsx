@@ -1,13 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import LoadingSpinner from '~/components/common/LoadingSpinner'
-
+import toast from 'react-hot-toast'
 import { IoSettingsOutline } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
 import { FaHeart } from "react-icons/fa6"
-
 import notificationApi from '~/api/modules/notificationApi'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import LoadingSpinner from '~/components/common/LoadingSpinner'
 
 const NotificationPage = () => {
   const [isLoading, setIsLoading] = useState(false)

@@ -1,13 +1,11 @@
+import { useDispatch, useSelector } from 'react-redux'
 import { MdHomeFilled } from "react-icons/md"
 import { IoNotifications } from "react-icons/io5"
 import { FaUser } from "react-icons/fa"
 import { Link } from "react-router-dom"
 import { BiLogOut } from "react-icons/bi"
-
 import ASvg from '../svgs/ASvg'
 import toast from 'react-hot-toast'
-
-import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from '~/redux/features/authSlice'
 
 const Sidebar = () => {

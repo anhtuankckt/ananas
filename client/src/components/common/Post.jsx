@@ -6,10 +6,10 @@ import { FaTrash } from "react-icons/fa"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-hot-toast"
-import LoadingSpinner from './LoadingSpinner'
 import { formatPostDate } from '~/utils/date'
 import { useSelector } from 'react-redux'
 import postsApi from '~/api/modules/postsApi'
+import LoadingSpinner from './LoadingSpinner'
 
 const Post = ({ post, updateDeletePost, updateLikePost, updateCommentPost }) => {
   const { authUser } = useSelector(state => state.auth)

@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { IoCloseSharp } from 'react-icons/io5'
 import { CiImageOn } from 'react-icons/ci'
 import { BsEmojiSmileFill } from 'react-icons/bs'
 import postsApi from '~/api/modules/postsApi'
-import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 
 const CreatePost = ({ onPostUpdate }) => {
@@ -48,7 +48,7 @@ const CreatePost = ({ onPostUpdate }) => {
     <div className='flex p-4 items-start gap-4 border-b border-gray-700'>
       <div className='avatar'>
         <div className='w-8 rounded-full'>
-          <img src={authUser.profileImg || "/avatar-placeholder.png"} alt="" />
+          <img src={authUser?.profileImg || "/avatar-placeholder.png"} alt="" />
         </div>
       </div>
 

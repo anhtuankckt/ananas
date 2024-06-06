@@ -7,25 +7,25 @@ import ProfilePage from '~/pages/profile/ProfilePage'
 const routes = [
   {
     path: '/',
-    element: <HomePage />
+    element: HomePage
   },
   {
     path: '/login',
-    element: <Login />,
+    element: Login,
     checkLogged: 'Logged'
   },
   {
     path: '/signup',
-    element: <SignUpPage />,
+    element: SignUpPage,
     checkLogged: 'Logged'
   },
   {
     path: '/notifications',
-    element: <NotificationPage />
+    element: NotificationPage
   },
   {
     path: '/profile/:username',
-    element: <ProfilePage />
+    element: ProfilePage
   }
 ]
 

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import EditProfileModal from './EditProfileModal'
 import { FaArrowLeft } from "react-icons/fa6"
 import { IoCalendarOutline } from "react-icons/io5"
 import { FaLink } from "react-icons/fa"
@@ -10,8 +9,10 @@ import userApi from '~/api/modules/userApi'
 import { useSelector } from 'react-redux'
 import Posts from '~/components/common/Posts'
 import useFollow from '~/hooks/useFollow'
-import ProfileHeaderSkeleton from '~/components/skeletons/ProfileHeaderSkeleton'
+import EditProfileModal from './EditProfileModal'
 import postsApi from '~/api/modules/postsApi'
+import useUpdateUserProfile from '~/hooks/useUpdateUserProfile'
+import ProfileHeaderSkeleton from '~/components/skeletons/ProfileHeaderSkeleton'
 
 const ProfilePage = () => {
   const { authUser } = useSelector(state => state.auth)
@@ -33,34 +34,38 @@ const ProfilePage = () => {
   const memberSinceDate = formatMemberSinceDate(user?.createdAt)
   const amIFollowing = authUser?.following.includes(user?._id)
 
+  const { updateProfile, isUpdatingProfile, isChangeUpdate } = useUpdateUserProfile()
+
+  const handleImgChange = (e, state) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        state === 'coverImg' && setCoverImg(reader.result)
+        state === 'profileImg' && setProfileImg(reader.result)
+      }
+    }
+  }
+
   useEffect(() => {
     const fetchProfileUser = async (username) => {
       setIsLoading(true)
       const { response, error } = await userApi.userProfile(username)
       setIsLoading(false)
-      if (response) {
-        setUser(response)
-      }
-
-      if (error) {
-        console.error(error)
-      }
+      if (response) { setUser(response) }
+      if (error) { console.error(error) }
     }
-    fetchProfileUser(username)
 
     const fetchPostsUser = async (username) => {
       const { response, error } = await postsApi.getPostsUser(username)
-      if (response) {
-        setPosts(response)
-      }
-
-      if (error) {
-        console.error(error)
-      }
+      if (response) { setPosts(response) }
+      if (error) { console.error(error) }
     }
+
+    fetchProfileUser(username)
     fetchPostsUser(username)
   }, [username])
-
 
   return (
     <>
@@ -144,6 +149,7 @@ const ProfilePage = () => {
                   <button
                     className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
                     onClick={async () => {
+                      if (isUpdatingProfile) return
                       await updateProfile({ coverImg, profileImg });
                       setProfileImg(null);
                       setCoverImg(null);
@@ -167,7 +173,7 @@ const ProfilePage = () => {
                       <>
                         <FaLink className='w-3 h-3 text-slate-500' />
                         <a
-                          href='https://youtube.com/@asaprogrammer_'
+                          href='/'
                           target='_blank'
                           rel='noreferrer'
                           className='text-sm text-blue-500 hover:underline'
