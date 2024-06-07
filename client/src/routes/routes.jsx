@@ -7,7 +7,6 @@ import NotFound from '~/pages/notFound/NotFound'
 
 const routes = [
   {
-    index: true,
     path: '/',
     element: HomePage,
     protected: true

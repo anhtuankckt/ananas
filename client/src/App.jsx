@@ -33,7 +33,7 @@ const App = () => {
           const Element = route.element
           const WrappedComponent = route.logged ? LoggedPage(Element) : route.protected ? ProtectedPage(Element) : Element
 
-          return (<Route index={route.index} key={index} path={route.path} element={<WrappedComponent />} />)
+          return (<Route key={index} path={route.path} element={<WrappedComponent />} />)
         })}
       </Routes>
 
