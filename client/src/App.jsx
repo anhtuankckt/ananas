@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import routes from './routes/routes'
 import ProtectedPage from './components/common/ProtectedPage'
-import CheckLogged from './components/common/CheckLogged'
+import LoggedPage from './components/common/LoggedPage'
 import Sidebar from './components/common/Sidebar'
 import RightPanel from './components/common/RightPanel'
 import authApi from './api/modules/authApi'
@@ -31,12 +31,8 @@ const App = () => {
       <Routes>
         {routes.map((route, index) => {
           const Element = route.element
-          const WrappedComponent = route.checkLogged
-            ? CheckLogged(Element)
-            : (route.checkLogged === undefined
-              ? ProtectedPage(Element)
-              : Element)
-          return <Route key={index} path={route.path} element={<WrappedComponent />} />
+          const WrappedComponent = route.logged ? LoggedPage(Element) : route.protected ? ProtectedPage(Element) : Element
+          return <Route key={index} path={route.path} element={route.checkLogged ? route.element : <WrappedComponent />} />
         })}
       </Routes>
 
