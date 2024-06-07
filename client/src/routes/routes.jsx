@@ -3,9 +3,11 @@ import Login from '~/pages/auth/login/Login'
 import SignUpPage from '~/pages/auth/signup/SignUpPage'
 import NotificationPage from '~/pages/notification/NotificationPage'
 import ProfilePage from '~/pages/profile/ProfilePage'
+import NotFound from '~/pages/notFound/NotFound'
 
 const routes = [
   {
+    index: true,
     path: '/',
     element: HomePage,
     protected: true
@@ -29,6 +31,10 @@ const routes = [
     path: '/profile/:username',
     element: ProfilePage,
     protected: true
+  },
+  {
+    path: '*',
+    element: NotFound
   }
 ]
 

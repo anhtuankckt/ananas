@@ -32,7 +32,8 @@ const App = () => {
         {routes.map((route, index) => {
           const Element = route.element
           const WrappedComponent = route.logged ? LoggedPage(Element) : route.protected ? ProtectedPage(Element) : Element
-          return <Route key={index} path={route.path} element={route.checkLogged ? route.element : <WrappedComponent />} />
+
+          return (<Route index={route.index} key={index} path={route.path} element={<WrappedComponent />} />)
         })}
       </Routes>
 
