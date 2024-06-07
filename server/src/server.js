@@ -18,7 +18,10 @@ cloudinary.config({
 const app = express()
 
 const corsOptions = {
-  origin: '*'
+  origin: 'https://ananas-theta.vercel.app',
+  methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
 }
 
 app.use(cors(corsOptions))
