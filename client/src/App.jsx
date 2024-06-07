@@ -31,7 +31,11 @@ const App = () => {
       <Routes>
         {routes.map((route, index) => {
           const Element = route.element
-          const WrappedComponent = route.checkLogged ? CheckLogged(Element) : ProtectedPage(Element)
+          const WrappedComponent = route.checkLogged
+            ? CheckLogged(Element)
+            : (route.checkLogged === undefined
+              ? ProtectedPage(Element)
+              : Element)
           return <Route key={index} path={route.path} element={<WrappedComponent />} />
         })}
       </Routes>
